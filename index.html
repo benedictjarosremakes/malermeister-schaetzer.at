@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malermeisterbetrieb Schätzer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Custom Properties */
+        :root {
+            /* Colors */
+            --color-bg: #F7F7F5;
+            --color-surface: #EBEBE6;
+            --color-text: #2A2A28;
+            --color-text-muted: #666661;
+            --color-accent: #9E2A2B;
+            --color-accent-dark: #7A2021;
+            --color-highlight: #D4AF37;
+            --color-white: #FFFFFF;
+            
+            /* Typography */
+            --font-heading: 'Oswald', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            /* Fluid Type Scale */
+            --text-xs: clamp(0.75rem, 1.5vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 1.8vw, 1rem);
+            --text-base: clamp(1rem, 2vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 2.5vw, 1.375rem);
+            --text-xl: clamp(1.375rem, 3vw, 1.75rem);
+            --text-2xl: clamp(1.75rem, 4vw, 2.5rem);
+            --text-3xl: clamp(2.25rem, 5vw, 3.5rem);
+            --text-4xl: clamp(3rem, 7vw, 5rem);
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-24: 6rem;
+            --space-32: 8rem;
+            
+            --section-padding: clamp(4rem, 10vw, 8rem);
+            
+            /* Z-Index Stack */
+            --z-base: 0;
+            --z-raised: 10;
+            --z-dropdown: 100;
+            --z-sticky: 200;
+            --z-overlay: 500;
+            --z-modal: 1000;
+            --z-toast: 2000;
+            --z-max: 9000;
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: var(--text-base);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            margin-bottom: var(--space-4);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        /* Utilities */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+
+        .text-accent { color: var(--color-accent); }
+        .text-muted { color: var(--color-text-muted); }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            padding: 1rem 2rem;
+            background-color: var(--color-accent);
+            color: var(--color-white);
+            font-family: var(--font-heading);
+            font-size: var(--text-lg);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            position: relative;
+            z-index: var(--z-raised);
+        }
+
+        .btn:hover {
+            background-color: var(--color-accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--color-text);
+            color: var(--color-text);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+        }
+
+        /* Icons */
+        [data-lucide] {
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            line-height: 1;
+            pointer-events: none;
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        .icon-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45em;
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-accent);
+            color: white;
+            padding: 8px;
+            z-index: var(--z-max);
+            transition: top 0.2s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Header & Navigation */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001; /* Literal number as per rules */
+            background-color: rgba(247, 247, 245, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(42, 42, 40, 0.1);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--color-text);
+        }
+
+        .desktop-nav {
+            display: none;
+        }
+
+        .desktop-nav ul {
+            display: flex;
+            gap: var(--space-8);
+        }
+
+        .desktop-nav a {
+            font-family: var(--font-heading);
+            font-size: var(--text-base);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .desktop-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .desktop-nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Nav */
+        .nav-toggle {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1002; /* Literal number */
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--color-text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000; /* Literal number */
+            background-color: var(--color-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-overlay ul {
+            text-align: center;
+        }
+
+        .mobile-overlay a {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: var(--text-3xl);
+            padding: 1rem 0;
+        }
+
+        @media (min-width: 768px) {
+            .nav-toggle {
+                display: none;
+                pointer-events: none;
+            }
+            .desktop-nav {
+                display: block;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 80px; /* Offset for header */
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .hero-content {
+            padding: var(--section-padding) var(--space-6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: var(--color-bg);
+        }
+
+        .hero-pattern {
+            display: none;
+            background-color: var(--color-surface);
+            background-image: 
+                linear-gradient(rgba(42, 42, 40, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(42, 42, 40, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: relative;
+        }
+        
+        .hero-pattern::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(235, 235, 230, 0.8) 100%);
+        }
+
+        @media (min-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero-content {
+                padding-left: max(var(--space-6), calc((100vw - 1280px) / 2 + var(--space-6)));
+                padding-right: var(--space-16);
+            }
+            .hero-pattern {
+                display: block;
+            }
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-heading);
+            color: var(--color-accent);
+            font-size: var(--text-lg);
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-4);
+        }
+
+        .hero h1 {
+            font-size: var(--text-4xl);
+            margin-bottom: var(--space-6);
+            color: var(--color-text);
+        }
+
+        .hero p {
+            font-size: var(--text-lg);
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-8);
+            max-width: 500px;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            margin-bottom: var(--space-8);
+            font-family: var(--font-heading);
+            font-size: var(--text-sm);
+            color: var(--color-text);
+            letter-spacing: 0.05em;
+        }
+        
+        .hero-tags span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .hero-tags span::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--color-highlight);
+        }
+
+        /* Discount Banner */
+        .discount-banner {
+            background-color: var(--color-accent);
+            color: var(--color-white);
+            padding: var(--space-4) var(--space-6);
+            text-align: center;
+        }
+
+        .discount-banner-inner {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            font-family: var(--font-heading);
+            font-size: var(--text-sm);
+            letter-spacing: 0.05em;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .discount-banner-inner {
+                flex-direction: row;
+                gap: var(--space-6);
+            }
+            .discount-banner-inner span:not(:last-child)::after {
+                content: '|';
+                margin-left: var(--space-6);
+                opacity: 0.5;
+            }
+        }
+
+        /* Intro / About Section */
+        .section-intro {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-bg);
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+        }
+
+        @media (min-width: 1024px) {
+            .intro-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--space-24);
+            }
+        }
+
+        .intro-text h2 {
+            font-size: var(--text-3xl);
+            margin-bottom: var(--space-6);
+        }
+
+        .intro-text p {
+            font-size: var(--text-lg);
+        }
+
+        .references {
+            background-color: var(--color-surface);
+            padding: var(--space-8);
+            border-left: 4px solid var(--color-accent);
+        }
+
+        .references h3 {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-4);
+        }
+
+        .references ul {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            color: var(--color-text-muted);
+        }
+
+        .references li {
+            position: relative;
+            padding-left: var(--space-6);
+        }
+        
+        .references li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 4px;
+            height: 4px;
+            background-color: var(--color-text-muted);
+            border-radius: 50%;
+        }
+
+        /* Services Section */
+        .section-services {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-surface);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-16);
+        }
+
+        .section-header h2 {
+            font-size: var(--text-3xl);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-6);
+        }
+
+        @media (min-width: 640px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .service-card {
+            background-color: var(--color-bg);
+            padding: var(--space-8);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-top: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(42, 42, 40, 0.05);
+            border-top-color: var(--color-accent);
+        }
+
+        .service-card h3 {
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-4);
+            color: var(--color-text);
+        }
+
+        .service-card ul {
+            color: var(--color-text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        /* Feature Section (New) */
+        .section-feature {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-bg);
+            overflow: hidden;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+            align-items: center;
+        }
+
+        @media (min-width: 1024px) {
+            .feature-grid {
+                grid-template-columns: 5fr 7fr;
+                gap: var(--space-24);
+            }
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background-color: var(--color-accent);
+            color: var(--color-white);
+            font-family: var(--font-heading);
+            padding: 0.25rem 0.75rem;
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-4);
+        }
+
+        .feature-text h2 {
+            font-size: var(--text-3xl);
+            margin-bottom: var(--space-6);
+        }
+
+        .feature-image-wrapper {
+            position: relative;
+            padding-right: var(--space-6);
+            padding-bottom: var(--space-6);
+        }
+
+        .feature-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: var(--space-6);
+            left: var(--space-6);
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-surface);
+            z-index: 0;
+        }
+
+        .feature-image-wrapper img {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            box-shadow: 0 20px 40px rgba(42, 42, 40, 0.1);
+        }
+
+        /* Contact Section */
+        .section-contact {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-surface);
+        }
+
+        .contact-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-wrapper h2 {
+            font-size: var(--text-3xl);
+            margin-bottom: var(--space-6);
+        }
+
+        .contact-wrapper p {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-8);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-8);
+        }
+
+        @media (min-width: 640px) {
+            .contact-info {
+                flex-direction: row;
+                gap: var(--space-12);
+            }
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: var(--text-xl);
+            font-family: var(--font-heading);
+            color: var(--color-text);
+            transition: color 0.2s ease;
+        }
+
+        .contact-item:hover {
+            color: var(--color-accent);
+        }
+
+        .contact-item i {
+            color: var(--color-accent);
+        }
+
+        /* Footer */
+        .site-footer {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            padding: clamp(4rem, 8vw, 7rem) 0 2rem;
+            font-size: var(--text-sm);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+            margin-bottom: var(--space-16);
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .footer-brand h3 {
+            font-family: var(--font-heading);
+            font-size: var(--text-2xl);
+            color: var(--color-white);
+            margin-bottom: var(--space-2);
+        }
+
+        .footer-brand p {
+            color: #a0a0a0;
+            margin-bottom: var(--space-6);
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-heading);
+            font-size: var(--text-lg);
+            color: var(--color-white);
+            margin-bottom: var(--space-4);
+        }
+
+        .footer-col ul {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .footer-col a, .footer-col button {
+            color: #a0a0a0;
+            transition: color 0.2s ease;
+            text-align: left;
+            padding: 0;
+            font-size: inherit;
+        }
+
+        .footer-col a:hover, .footer-col button:hover {
+            color: var(--color-white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            text-align: center;
+            color: #808080;
+        }
+
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+
+        /* Modals & Overlays */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: var(--z-modal);
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: var(--color-bg);
+            width: 100%;
+            max-width: 480px;
+            padding: var(--space-8);
+            border-radius: 4px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.is-open .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--space-4);
+            right: var(--space-4);
+            color: var(--color-text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--color-accent);
+        }
+
+        .modal-title {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-4);
+            color: var(--color-text);
+        }
+
+        .modal-body {
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-6);
+        }
+        
+        .modal-body a {
+            color: var(--color-accent);
+            text-decoration: underline;
+        }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: var(--space-4);
+            left: var(--space-4);
+            right: var(--space-4);
+            max-width: 400px;
+            background-color: var(--color-bg);
+            padding: var(--space-6);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            z-index: var(--z-toast);
+            border-left: 4px solid var(--color-accent);
+            transform: translateY(150%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cookie-banner.is-visible {
+            transform: translateY(0);
+        }
+
+        .cookie-text {
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-4);
+            color: var(--color-text-muted);
+        }
+
+        .cookie-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .cookie-btn {
+            padding: 0.5rem 1rem;
+            font-family: var(--font-heading);
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .cookie-btn-accept {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+        }
+        
+        .cookie-btn-decline {
+            background-color: transparent;
+            color: var(--color-text-muted);
+            border: 1px solid var(--color-text-muted);
+        }
+
+    </style>
+</head>
+<body>
+<!-- DEMO NOTICE BANNER - benedictjaros.com -->
+<style>
+#__demo_spacer{display:block;}
+#__demo_notice,#__demo_notice *{box-sizing:border-box;margin:0;padding:0;}
+#__demo_notice{
+  position:fixed;top:0;left:0;right:0;z-index:99999;
+  background:rgba(9,9,11,.97);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  font-family:system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+}
+#__demo_inner{
+  max-width:1280px;margin:0 auto;
+  padding:0 44px 0 18px;min-height:38px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+#__demo_dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:#f5c842;box-shadow:0 0 7px rgba(245,200,66,.55);}
+#__demo_label{color:#f5c842;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;}
+#__demo_divider{color:rgba(255,255,255,.15);font-size:12px;flex-shrink:0;}
+#__demo_text{color:rgba(255,255,255,.45);font-size:11.5px;line-height:1.45;flex:1 1 160px;}
+#__demo_links{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+#__demo_links a{
+  color:rgba(255,255,255,.38);font-size:11px;text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  transition:color .15s,border-color .15s;white-space:nowrap;
+}
+#__demo_links a:hover{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.4);}
+#__demo_link_sep{color:rgba(255,255,255,.15);font-size:10px;}
+#__demo_close{
+  position:absolute;right:0;top:0;bottom:0;width:40px;
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.28);font-size:16px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s;
+}
+#__demo_close:hover{color:rgba(255,255,255,.7);}
+@media(max-width:560px){
+  #__demo_inner{padding:7px 44px 7px 14px;gap:6px;}
+  #__demo_text{font-size:11px;flex:1 1 100%;order:3;}
+  #__demo_dot,#__demo_label{order:1;}
+  #__demo_divider{order:2;}
+  #__demo_links{order:4;}
+}
+</style>
+<div id="__demo_spacer"></div>
+<div id="__demo_notice" role="banner" aria-label="Demo notice">
+  <div id="__demo_inner">
+    <span id="__demo_dot"></span>
+    <span id="__demo_label">Demo</span>
+    <span id="__demo_divider">/</span>
+    <span id="__demo_text">Unofficial remake &mdash; not the real website. All content &amp; trademarks belong to their owners.</span>
+    <div id="__demo_links">
+      <a href="https://benedictjaros.com/impressum" target="_blank" rel="noopener noreferrer">Impressum</a>
+      <span id="__demo_link_sep">&middot;</span>
+      <a href="https://benedictjaros.com/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+    </div>
+  </div>
+  <button id="__demo_close" aria-label="Close demo notice">&#x2715;</button>
+</div>
+<script>
+(function () {
+  var spacer = document.getElementById('__demo_spacer');
+  var b = document.getElementById('__demo_notice');
+  var x = document.getElementById('__demo_close');
+  if (!b || !spacer) return;
+  function sync() { spacer.style.height = b.offsetHeight + 'px'; }
+  function hide() {
+    b.style.display = 'none'; spacer.style.height = '0';
+    try { sessionStorage.setItem('__demo_closed', '1'); } catch (e) {}
+  }
+  try { if (sessionStorage.getItem('__demo_closed')) { b.style.display = 'none'; spacer.style.height = '0'; return; } } catch (e) {}
+  sync();
+  window.addEventListener('resize', function () { if (b.style.display !== 'none') sync(); });
+  if (x) x.addEventListener('click', hide);
+}());
+</script>
+
+
+    <a href="#main" class="skip-link">Zum Hauptinhalt springen</a>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#" class="logo">SCHÄTZER</a>
+            
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#leistungen">Leistungen</a></li>
+                    <li><a href="#ueber-uns">Über uns</a></li>
+                    <li><a href="#kontakt">Kontakt</a></li>
+                </ul>
+            </nav>
+
+            <button class="nav-toggle" aria-expanded="false" aria-label="Menü öffnen" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-overlay" id="mobileOverlay">
+        <nav>
+            <ul>
+                <li><a href="#leistungen" class="mobile-link">Leistungen</a></li>
+                <li><a href="#ueber-uns" class="mobile-link">Über uns</a></li>
+                <li><a href="#kontakt" class="mobile-link">Kontakt</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main id="main">
+        
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-subtitle reveal">Ihr Tiroler Spezialist</span>
+                <h1 class="reveal" style="--i:1">Malermeisterbetrieb Schätzer</h1>
+                <p class="reveal" style="--i:2">Spezialist für Maler- und Lackierarbeiten sowohl im Innen- wie auch im Außenbereich.</p>
+                <div class="hero-tags reveal" style="--i:3">
+                    <span>Kompetent</span>
+                    <span>Sauber</span>
+                    <span>Preiswert</span>
+                </div>
+                <div class="reveal" style="--i:4">
+                    <a href="#kontakt" class="btn">
+                        Angebot anfordern <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-pattern"></div>
+        </section>
+
+        <div class="discount-banner">
+            <div class="discount-banner-inner">
+                <span>Winterrabatt -30% (Jän-Mär)</span>
+                <span>Saisonstartrabatt -20% (Apr)</span>
+                <span>Saisonausklangrabatt -20% (Dez)</span>
+            </div>
+        </div>
+
+        <section id="ueber-uns" class="section-intro">
+            <div class="container intro-grid">
+                <div class="intro-text reveal">
+                    <h2>Qualität aus Meisterhand</h2>
+                    <p>Wir arbeiten für Sie schnell, sauber und gewissenhaft – und das alles zum fairen Preis! Unser Einsatzgebiet erstreckt sich von Innsbruck bis einschließlich dem Bezirk Innsbruck-Land.</p>
+                </div>
+                <div class="references reveal" style="--i:1">
+                    <h3>Unsere Referenzarbeiten</h3>
+                    <ul>
+                        <li>Rathausgalerie Innsbruck</li>
+                        <li>Hotel Hilton</li>
+                        <li>Tui Reisebüro</li>
+                        <li>Admiral Sportwetten</li>
+                        <li>und viele weitere zufriedene Kunden</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="leistungen" class="section-services">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2>Unsere Leistungen</h2>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card reveal" style="--i:0">
+                        <h3>Sanierung & Beseitigung</h3>
+                        <ul>
+                            <li>Badezimmersanierung</li>
+                            <li>Wasserschadensanierung</li>
+                            <li>Schimmelbeseitigung</li>
+                        </ul>
+                    </div>
+                    <div class="service-card reveal" style="--i:1">
+                        <h3>Wandgestaltung</h3>
+                        <ul>
+                            <li>Wischtechnik</li>
+                            <li>Lasuren</li>
+                            <li>Verputzarbeiten</li>
+                        </ul>
+                    </div>
+                    <div class="service-card reveal" style="--i:2">
+                        <h3>Lackierungen</h3>
+                        <ul>
+                            <li>Lackierarbeiten allgemein</li>
+                            <li>Wandfliesenlackierung</li>
+                        </ul>
+                    </div>
+                    <div class="service-card reveal" style="--i:3">
+                        <h3>Boden & Fassade</h3>
+                        <ul>
+                            <li>Bodenbeschichtungen</li>
+                            <li>Fassadenanstriche</li>
+                            <li>Fassadenreinigung</li>
+                        </ul>
+                    </div>
+                    <div class="service-card reveal" style="--i:4">
+                        <h3>Spezialbeschichtungen</h3>
+                        <ul>
+                            <li>Metallbeschichtungen</li>
+                            <li>Holzschutzanstriche</li>
+                        </ul>
+                    </div>
+                    <div class="service-card reveal" style="--i:5">
+                        <h3>Service & Beratung</h3>
+                        <ul>
+                            <li>Farbberatung</li>
+                            <li>Fensterabdichtungen</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-feature">
+            <div class="container feature-grid">
+                <div class="feature-text reveal">
+                    <span class="feature-badge">Neu im Angebot</span>
+                    <h2>Furnier- & Kunststoffbeschichtung</h2>
+                    <p>Ihnen gefallen Ihre alten Türen nicht mehr? Kein Problem, mit den neuen Haftgründen und Speziallacke für Funiere und Kunststoffe sehen ihre Türen und Zargen aus wie neu!</p>
+                    <p>Die Türblätter müssen nicht getauscht werden. Es sind keine Tischlerarbeiten mehr notwendig!</p>
+                </div>
+                <div class="feature-image-wrapper reveal" style="--i:1">
+                    <img src="https://www.malermeister-schaetzer.at/.cm4all/iproc.php/weisse-tuer3.jpg/downsize_1280_0/weisse-tuer3.jpg" alt="Weiß beschichtete Tür" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <section id="kontakt" class="section-contact">
+            <div class="container">
+                <div class="contact-wrapper reveal">
+                    <h2>Interesse geweckt?</h2>
+                    <p>Sollten Sie Interesse an der Durchführung von Malerarbeiten haben, freue ich mich auf Ihre Kontaktaufnahme. Gerne erstelle ich Ihnen ein unverbindliches Angebot.</p>
+                    
+                    <div class="contact-info">
+                        <a href="tel:06642328473" class="contact-item">
+                            <i data-lucide="phone"></i>
+                            0664 / 2328473
+                        </a>
+                        <a href="mailto:malermeister-schaetzer@a1.net" class="contact-item">
+                            <i data-lucide="mail"></i>
+                            malermeister-schaetzer@a1.net
+                        </a>
+                    </div>
+                    <p class="text-muted">Ihr Malermeister Klaus Schätzer</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>SCHÄTZER</h3>
+                    <p>Ihr Tiroler Spezialist für Maler- und Lackierarbeiten. Kompetent, sauber und preiswert.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#leistungen">Leistungen</a></li>
+                        <li><a href="#ueber-uns">Über uns</a></li>
+                        <li><a href="#kontakt">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Rechtliches</h4>
+                    <ul>
+                        <li><button type="button" class="legal-trigger">Impressum</button></li>
+                        <li><button type="button" class="legal-trigger">Datenschutz</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Schätzer — All original content, images & trademarks are property of their respective owners. Website rebuilt by Benedict Jaros.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Modal (Demo Notice) -->
+    <div class="modal-overlay" id="legalModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-card">
+            <button class="modal-close" aria-label="Schließen" id="closeModal">
+                <i data-lucide="x"></i>
+            </button>
+            <h2 id="modalTitle" class="modal-title font-heading">Rechtliche Hinweise</h2>
+            <div class="modal-body">
+                <p>Diese Website ist ein Demo-Remake und wurde nicht von oder für das Unternehmen erstellt. Die Inhalte dienen ausschließlich Demonstrationszwecken. Für unsere eigenen rechtlichen Informationen:</p>
+                <p><a href="https://benedictjaros.com/impressum" target="_blank">Impressum</a></p>
+                <p><a href="https://benedictjaros.com/datenschutz" target="_blank">Datenschutz</a></p>
+            </div>
+            <button class="btn" id="closeModalBtn">Verstanden</button>
+        </div>
+    </div>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-text">
+            Wir verwenden Cookies, um die Nutzererfahrung zu verbessern. Durch die weitere Nutzung dieser Website stimmen Sie unserer Cookie-Richtlinie zu.
+        </div>
+        <div class="cookie-actions">
+            <button class="cookie-btn cookie-btn-accept" id="acceptCookies">Akzeptieren</button>
+            <button class="cookie-btn cookie-btn-decline" id="declineCookies">Ablehnen</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Icons
+            lucide.createIcons();
+
+            // Mobile Navigation
+            const navToggle = document.getElementById('navToggle');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            function toggleMenu() {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                mobileOverlay.classList.toggle('is-open');
+                document.body.style.overflow = isExpanded ? '' : 'hidden';
+            }
+
+            navToggle.addEventListener('click', toggleMenu);
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileOverlay.classList.contains('is-open')) {
+                    toggleMenu();
+                }
+            });
+
+            // Scroll Reveal
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // Legal Modal
+            const legalTriggers = document.querySelectorAll('.legal-trigger');
+            const modal = document.getElementById('legalModal');
+            const closeBtns = [document.getElementById('closeModal'), document.getElementById('closeModalBtn')];
+
+            function openModal() {
+                modal.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModalFunc() {
+                modal.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+
+            legalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', openModal);
+            });
+
+            closeBtns.forEach(btn => {
+                if(btn) btn.addEventListener('click', closeModalFunc);
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModalFunc();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+                    closeModalFunc();
+                }
+            });
+
+            // Cookie Banner
+            const cookieBanner = document.getElementById('cookieBanner');
+            const acceptBtn = document.getElementById('acceptCookies');
+            const declineBtn = document.getElementById('declineCookies');
+
+            if (!localStorage.getItem('cookie_consent')) {
+                // Small delay for better UX
+                setTimeout(() => {
+                    cookieBanner.classList.add('is-visible');
+                }, 1000);
+            }
+
+            function handleCookieChoice(choice) {
+                localStorage.setItem('cookie_consent', choice);
+                cookieBanner.classList.remove('is-visible');
+            }
+
+            acceptBtn.addEventListener('click', () => handleCookieChoice('accepted'));
+            declineBtn.addEventListener('click', () => handleCookieChoice('declined'));
+        });
+    </script>
+</body>
+</html>
